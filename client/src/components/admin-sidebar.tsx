@@ -23,47 +23,41 @@ const data = {
         group: "M30-308BKi-22",
         avatar: "/avatars/shadcn.jpg",
     },
-    navMain: [
+    navAdmin: [
         {
-            title: "Overview",
+            title: "Students",
             url: "#",
             items: [
                 {
-                    title: "Home",
-                    url: "/dashboard/home",
-                    isActive: true,
+                    title: "View Students",
+                    url: "#",
                 },
                 {
-                    title: "Profile",
+                    title: "Add Students",
                     url: "#",
                 },
             ],
         },
         {
-            title: "Academic Resources",
+            title: "Events",
             url: "#",
             items: [
                 {
-                    title: "Timetable",
-                    url: "/dashboard/timetable",
+                    title: "View Events",
+                    url: "/admin/events",
                 },
-
                 {
-                    title: "Study Materials",
-                    url: "#",
+                    title: "Add Events",
+                    url: "/admin/add-events",
                 },
             ],
         },
         {
-            title: "Communication",
+            title: "Announcements",
             url: "#",
             items: [
                 {
-                    title: "Announcements",
-                    url: "#",
-                },
-                {
-                    title: "Events",
+                    title: "Add Announcements",
                     url: "#",
                 },
             ],
@@ -71,7 +65,9 @@ const data = {
     ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AdminSidebar({
+    ...props
+}: React.ComponentProps<typeof Sidebar>) {
     return (
         <Sidebar {...props}>
             <SidebarHeader>
@@ -91,17 +87,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
-                {data.navMain.map((item) => (
+                {data.navAdmin.map((item) => (
                     <SidebarGroup key={item.title}>
                         <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
                         <SidebarGroupContent>
                             <SidebarMenu>
                                 {item.items.map((item) => (
                                     <SidebarMenuItem key={item.title}>
-                                        <SidebarMenuButton
-                                            asChild
-                                            isActive={item.isActive}
-                                        >
+                                        <SidebarMenuButton asChild>
                                             <Link to={item.url}>
                                                 {item.title}
                                             </Link>

@@ -13,11 +13,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id         Int      @id @default(autoincrement())
-  name       String
-  email      String   @unique
-  password   String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+model Admin {
+  id            Int      @id @default(autoincrement())
+  email         String   @unique
+  password_hash String
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  events        Event[]
+}
+
+model Event {
+  id                Int      @id @default(autoincrement())
+  name              String
+  description       String
+  date              DateTime
+  venue             String
+  participant_limit Int
+  created_at        DateTime @default(now())
+  updated_at        DateTime @updatedAt
+  adminId           Int
+  admin             Admin    @relation(fields: [adminId], references: [id])
 }

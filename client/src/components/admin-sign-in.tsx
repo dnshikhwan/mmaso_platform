@@ -11,8 +11,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
+import { axiosConfig } from "@/axiosConfig";
 
-export function LoginForm({
+export function AdminSignInForm({
     className,
     ...props
 }: React.ComponentProps<"div">) {
@@ -20,21 +23,29 @@ export function LoginForm({
     const [password, setPassword] = useState("");
 
     const navigate = useNavigate();
-    const handleSignIn = (e: FormEvent) => {
+    const handleSignIn = async (e: FormEvent) => {
         e.preventDefault();
 
-        if (email === "me@admin.com") {
-            localStorage.setItem("admin", "true");
-            return navigate("/admin/home");
-        }
+        const data = {
+            email,
+            password,
+        };
 
-        return navigate("/dashboard/home");
+        try {
+            await axiosConfig.post("/admin/sign-in", data);
+            toast.success("Welcome back!");
+            return navigate("/admin/dashboard");
+        } catch (err) {
+            if (err instanceof AxiosError) {
+                toast.error(err.response?.data.message);
+            }
+        }
     };
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
             <Card>
                 <CardHeader>
-                    <CardTitle>Login to your account</CardTitle>
+                    <CardTitle>Login to your admin account</CardTitle>
                     <CardDescription>
                         Enter your email below to login to your account
                     </CardDescription>
@@ -54,15 +65,7 @@ export function LoginForm({
                                 />
                             </div>
                             <div className="grid gap-3">
-                                <div className="flex items-center">
-                                    <Label htmlFor="password">Password</Label>
-                                    <a
-                                        href="#"
-                                        className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                                    >
-                                        Forgot your password?
-                                    </a>
-                                </div>
+                                <Label htmlFor="password">Password</Label>
                                 <Input
                                     id="password"
                                     type="password"
