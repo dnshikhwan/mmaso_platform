@@ -57,6 +57,10 @@ const data = {
             url: "#",
             items: [
                 {
+                    title: "View Announcements",
+                    url: "#",
+                },
+                {
                     title: "Add Announcements",
                     url: "#",
                 },

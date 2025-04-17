@@ -3,13 +3,13 @@ import SignIn from "./pages/auth/SignIn";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Timetable from "./pages/dashboard/Timetable";
 import Students from "./pages/admin/Students";
-import Events from "./pages/admin/Events";
-import AddEvents from "./pages/admin/AddEvents";
+import Events from "./pages/events/Events";
+import AddEvents from "./pages/events/AddEvents";
 import AdminSignIn from "./pages/auth/AdminSignIn";
 import { Toaster } from "./components/ui/sonner";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-import Event from "./pages/admin/Event";
-import EditEvent from "./pages/admin/EditEvent";
+import Event from "./pages/events/Event";
+import EditEvent from "./pages/events/EditEvent";
 
 const App = () => {
     return (
