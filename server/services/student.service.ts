@@ -5,6 +5,56 @@ import { APP_MESSAGE, HTTP_RESPONSE_CODE } from "../constants";
 import prisma from "../prisma/prisma";
 import { sendMail } from "../helpers/mail.helper";
 
+export const studentSignIn = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return sendResponse(
+                res,
+                false,
+                HTTP_RESPONSE_CODE.BAD_REQUEST,
+                APP_MESSAGE.missingRequiredFields
+            );
+        }
+
+        const student = await prisma.student.findUnique({
+            where: {
+                email,
+            },
+        });
+
+        if (!student) {
+            return sendResponse(
+                res,
+                false,
+                HTTP_RESPONSE_CODE.BAD_REQUEST,
+                APP_MESSAGE.invalidCredentials
+            );
+        }
+
+        const decryptPassword: boolean = await argon2.verify(
+            student.password_hash,
+            password
+        );
+
+        if (!decryptPassword) {
+            return sendResponse(
+                res,
+                false,
+                HTTP_RESPONSE_CODE.BAD_REQUEST,
+                APP_MESSAGE.invalidCredentials
+            );
+        }
+    } catch (err) {
+        next(err);
+    }
+};
+
 export const addStudent = async (
     req: Request,
     res: Response,
@@ -39,9 +89,9 @@ export const addStudent = async (
 
         const chars =
             "0123456789abcdefghijklmnopqrstuvwxyz!@#$%^&*()ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        const passwordLength = 12;
-        let password = "";
-        for (var i = 0; i <= passwordLength; i++) {
+        const passwordLength = 10;
+        let password = "mmaso";
+        for (var i = 6; i <= passwordLength; i++) {
             var randomNumber = Math.floor(Math.random() * chars.length);
             password += chars.substring(randomNumber, randomNumber + 1);
         }
