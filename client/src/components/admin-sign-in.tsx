@@ -10,7 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FormEvent, useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 import { axiosConfig } from "@/axiosConfig";
@@ -80,6 +80,12 @@ export function AdminSignInForm({
                                 <Button type="submit" className="w-full">
                                     Login
                                 </Button>
+                                <Link
+                                    to={"/"}
+                                    className="text-center inline-block text-xs underline-offset-4 underline"
+                                >
+                                    Login as student
+                                </Link>
                             </div>
                         </div>
                     </form>

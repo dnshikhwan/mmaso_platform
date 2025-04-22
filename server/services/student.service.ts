@@ -50,6 +50,13 @@ export const studentSignIn = async (
                 APP_MESSAGE.invalidCredentials
             );
         }
+
+        return sendResponse(
+            res,
+            true,
+            HTTP_RESPONSE_CODE.OK,
+            APP_MESSAGE.signedIn
+        );
     } catch (err) {
         next(err);
     }

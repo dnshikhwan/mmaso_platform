@@ -10,7 +10,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FormEvent, useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
+import { axiosConfig } from "@/axiosConfig";
 
 export function LoginForm({
     className,
@@ -20,15 +23,23 @@ export function LoginForm({
     const [password, setPassword] = useState("");
 
     const navigate = useNavigate();
-    const handleSignIn = (e: FormEvent) => {
+    const handleSignIn = async (e: FormEvent) => {
         e.preventDefault();
 
-        if (email === "me@admin.com") {
-            localStorage.setItem("admin", "true");
-            return navigate("/admin/home");
-        }
+        try {
+            const data = {
+                email,
+                password,
+            };
 
-        return navigate("/dashboard/home");
+            const response = await axiosConfig.post("/student/sign-in", data);
+            toast.success(response.data.message);
+            return navigate("/dashboard/home");
+        } catch (err) {
+            if (err instanceof AxiosError) {
+                toast.error(err.response?.data.message);
+            }
+        }
     };
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -77,6 +88,12 @@ export function LoginForm({
                                 <Button type="submit" className="w-full">
                                     Login
                                 </Button>
+                                <Link
+                                    to={"/admin/sign-in"}
+                                    className="text-center inline-block text-xs underline-offset-4 underline"
+                                >
+                                    Login as admin
+                                </Link>
                             </div>
                         </div>
                     </form>
