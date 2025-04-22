@@ -3,5 +3,5 @@ export interface IStudent {
     name: string;
     group: string;
     email: string;
-    batch: string;
+    batch: number;
 }

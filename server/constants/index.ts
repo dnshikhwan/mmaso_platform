@@ -63,6 +63,7 @@ export const APP_MESSAGE = {
     //student
     studentDuplicatedEmail: "Student with this email already exists.",
     studentCreated: "Student created successfully.",
+    studentNotFound: "Student not found.",
 
     // auth
     policyError: "Please agree to our privacy policy.",
@@ -72,4 +73,6 @@ export const APP_MESSAGE = {
     invalidCredentials: "Invalid email or password.",
     userUnauthorized:
         "User unauthorized! Please sign in to access this resource.",
+
+    signedOut: "User successfully signed out.",
 };

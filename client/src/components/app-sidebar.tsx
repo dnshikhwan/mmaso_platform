@@ -31,11 +31,10 @@ const data = {
                 {
                     title: "Home",
                     url: "/dashboard/home",
-                    isActive: true,
                 },
                 {
                     title: "Profile",
-                    url: "#",
+                    url: "/dashboard/profile",
                 },
             ],
         },
@@ -50,7 +49,7 @@ const data = {
 
                 {
                     title: "Study Materials",
-                    url: "#",
+                    url: "/dashboard/notes",
                 },
             ],
         },
@@ -98,10 +97,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                             <SidebarMenu>
                                 {item.items.map((item) => (
                                     <SidebarMenuItem key={item.title}>
-                                        <SidebarMenuButton
-                                            asChild
-                                            isActive={item.isActive}
-                                        >
+                                        <SidebarMenuButton asChild>
                                             <Link to={item.url}>
                                                 {item.title}
                                             </Link>

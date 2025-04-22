@@ -1,9 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import argon2 from "argon2";
+import jwt from "jsonwebtoken";
 import { sendResponse } from "../helpers/response.helper";
 import { APP_MESSAGE, HTTP_RESPONSE_CODE } from "../constants";
 import prisma from "../prisma/prisma";
 import { sendMail } from "../helpers/mail.helper";
+import { configs, cookieOptions } from "../configs";
+import { Student } from "@prisma/client";
 
 export const studentSignIn = async (
     req: Request,
@@ -50,6 +53,19 @@ export const studentSignIn = async (
                 APP_MESSAGE.invalidCredentials
             );
         }
+
+        const accessToken = jwt.sign(
+            {
+                id: student.id,
+                email: student.email,
+            },
+            configs.JWT_SECRET,
+            {
+                expiresIn: "15m",
+            }
+        );
+
+        res.cookie("accessToken", accessToken, cookieOptions);
 
         return sendResponse(
             res,
@@ -146,6 +162,43 @@ export const getAllStudents = async (
             APP_MESSAGE.success,
             {
                 students,
+            }
+        );
+    } catch (err) {
+        next(err);
+    }
+};
+
+export const getStudentProfile = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const user = req.user as Student;
+
+        const profile = await prisma.student.findUnique({
+            where: {
+                email: user.email,
+            },
+        });
+
+        if (!profile) {
+            return sendResponse(
+                res,
+                false,
+                HTTP_RESPONSE_CODE.NOT_FOUND,
+                APP_MESSAGE.studentNotFound
+            );
+        }
+
+        return sendResponse(
+            res,
+            true,
+            HTTP_RESPONSE_CODE.OK,
+            APP_MESSAGE.success,
+            {
+                profile,
             }
         );
     } catch (err) {

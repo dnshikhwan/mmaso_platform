@@ -104,3 +104,22 @@ export const adminSignIn = async (
         next(err);
     }
 };
+
+export const signOut = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        res.clearCookie("accessToken");
+
+        return sendResponse(
+            res,
+            true,
+            HTTP_RESPONSE_CODE.OK,
+            APP_MESSAGE.signedOut
+        );
+    } catch (err) {
+        next(err);
+    }
+};

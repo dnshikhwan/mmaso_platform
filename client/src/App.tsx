@@ -13,6 +13,8 @@ import EditEvent from "./pages/events/EditEvent";
 import Announcements from "./pages/announcements/Announcements";
 import NotFound from "./pages/errors/NotFound";
 import AddStudents from "./pages/students/AddStudents";
+import Profile from "./pages/profile/Profile";
+import Notes from "./pages/material/Notes";
 
 const App = () => {
     return (
@@ -23,6 +25,9 @@ const App = () => {
                 <Route index element={<SignIn />} />
                 <Route path="dashboard">
                     <Route path="home" element={<Dashboard />} />
+                    <Route path="profile" element={<Profile />} />
+
+                    <Route path="notes" element={<Notes />} />
 
                     <Route path="timetable" element={<Timetable />} />
                     <Route path="event/:id" element={<Event />} />

@@ -13,7 +13,7 @@ import {
     SidebarMenuItem,
     SidebarRail,
 } from "@/components/ui/sidebar";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -21,6 +21,9 @@ import {
     DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { ChevronUp, User2 } from "lucide-react";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
+import { axiosConfig } from "@/axiosConfig";
 
 const data = {
     user: {
@@ -78,6 +81,20 @@ const data = {
 export function AdminSidebar({
     ...props
 }: React.ComponentProps<typeof Sidebar>) {
+    const navigate = useNavigate();
+
+    const handleSignOut = async () => {
+        try {
+            const response = await axiosConfig.post("/admin/sign-out");
+            toast.success(response.data.message);
+            return navigate("/");
+        } catch (err) {
+            if (err instanceof AxiosError) {
+                toast.error(err.response?.data.message);
+            }
+        }
+    };
+
     return (
         <Sidebar {...props}>
             <SidebarHeader>
@@ -130,7 +147,7 @@ export function AdminSidebar({
                                 side="top"
                                 className="w-[--radix-popper-anchor-width]"
                             >
-                                <DropdownMenuItem>
+                                <DropdownMenuItem onClick={handleSignOut}>
                                     <span>Sign out</span>
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
