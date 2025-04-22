@@ -28,9 +28,21 @@ model Event {
   description       String
   date              DateTime
   venue             String
+  image             String
   participant_limit Int
   created_at        DateTime @default(now())
   updated_at        DateTime @updatedAt
   adminId           Int
   admin             Admin    @relation(fields: [adminId], references: [id])
+}
+
+model Student {
+  id            Int      @id @default(autoincrement())
+  name          String
+  group         String
+  email         String   @unique
+  password_hash String
+  batch         Int
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
 }

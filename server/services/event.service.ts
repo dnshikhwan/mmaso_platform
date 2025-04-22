@@ -21,26 +21,29 @@ export const createEvent = async (
             );
         }
 
-        const newEvent = await prisma.event.create({
-            data: {
-                name,
-                description,
-                date: new Date(date),
-                venue,
-                participant_limit: Number(participant_limit),
-                adminId,
-            },
-        });
+        console.log(req.files);
 
-        return sendResponse(
-            res,
-            true,
-            HTTP_RESPONSE_CODE.CREATED,
-            APP_MESSAGE.eventCreated,
-            {
-                event: newEvent,
-            }
-        );
+        // const newEvent = await prisma.event.create({
+        //     data: {
+        //         name,
+        //         description,
+        //         date: new Date(date),
+        //         venue,
+        //         image,
+        //         participant_limit: Number(participant_limit),
+        //         adminId,
+        //     },
+        // });
+
+        // return sendResponse(
+        //     res,
+        //     true,
+        //     HTTP_RESPONSE_CODE.CREATED,
+        //     APP_MESSAGE.eventCreated,
+        //     {
+        //         event: newEvent,
+        //     }
+        // );
     } catch (err) {
         next(err);
     }

@@ -30,11 +30,11 @@ const data = {
             items: [
                 {
                     title: "View Students",
-                    url: "#",
+                    url: "/admin/view-students",
                 },
                 {
                     title: "Add Students",
-                    url: "#",
+                    url: "/admin/add-students",
                 },
             ],
         },
@@ -58,7 +58,7 @@ const data = {
             items: [
                 {
                     title: "View Announcements",
-                    url: "#",
+                    url: "/admin/view-announcements",
                 },
                 {
                     title: "Add Announcements",

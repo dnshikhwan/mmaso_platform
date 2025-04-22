@@ -60,6 +60,10 @@ export const APP_MESSAGE = {
     eventNotFound: "Event not found.",
     eventDeleted: "Event deleted successfully",
 
+    //student
+    studentDuplicatedEmail: "Student with this email already exists.",
+    studentCreated: "Student created successfully.",
+
     // auth
     policyError: "Please agree to our privacy policy.",
     emailExists: "User with this email address already exists.",

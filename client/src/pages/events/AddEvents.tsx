@@ -13,7 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AxiosError } from "axios";
-import { FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
@@ -23,6 +23,8 @@ const AddEvents = () => {
     const [date, setDate] = useState<Date | undefined>(undefined);
     const [venue, setVenue] = useState("");
     const [participantLimit, setParticipantLimit] = useState("0");
+    const [image, setImage] = useState<File | string>("");
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const navigate = useNavigate();
 
     const handleCreateEvents = async (e: FormEvent) => {
@@ -31,10 +33,13 @@ const AddEvents = () => {
             const data = {
                 name,
                 description,
+                image,
                 date,
                 venue,
                 participant_limit: participantLimit,
             };
+
+            console.log(data);
 
             const response = await axiosConfig.post("event/create-event", data);
             toast.success(response.data.message);
@@ -46,15 +51,29 @@ const AddEvents = () => {
         }
     };
 
+    const handlePhoto = (e: ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files) return;
+        setImage(e.target.files[0]);
+
+        const reader = new FileReader();
+        reader.readAsDataURL(e.target.files[0]);
+        reader.onloadend = () => {
+            setPreviewUrl(reader.result as string);
+        };
+    };
+
     return (
         <AdminLayout heading="Events " subheading="Add Events">
             <div className="flex flex-1 flex-col gap-4 p-4">
                 <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min">
-                    <Card className="w-full">
+                    <Card className="w-2/3">
                         <CardHeader>
-                            <CardTitle>Create events</CardTitle>
+                            <CardTitle>Add events</CardTitle>
                         </CardHeader>
-                        <form onSubmit={handleCreateEvents}>
+                        <form
+                            onSubmit={handleCreateEvents}
+                            encType="multipart/form-data"
+                        >
                             <CardContent>
                                 <div className="grid w-full items-center gap-4">
                                     <div className="flex flex-col space-y-1.5">
@@ -83,8 +102,26 @@ const AddEvents = () => {
                                     </div>
                                     <div className="flex flex-col space-y-1.5">
                                         <Label htmlFor="picture">Picture</Label>
-                                        <Input id="picture" type="file" />
+                                        <Input
+                                            id="picture"
+                                            name="picture"
+                                            type="file"
+                                            accept=".png, .jpg, .jpeg"
+                                            onChange={handlePhoto}
+                                        />
                                     </div>
+                                    {previewUrl && (
+                                        <div className="flex flex-col space-y-1.5">
+                                            <Label htmlFor="picture">
+                                                Preview
+                                            </Label>
+                                            <img
+                                                src={previewUrl}
+                                                alt="preview"
+                                                className="max-h-30 max-w-30"
+                                            />
+                                        </div>
+                                    )}
                                     <div className="flex flex-col space-y-1.5">
                                         <Label htmlFor="date">Date</Label>
                                         <DatePicker
@@ -114,7 +151,7 @@ const AddEvents = () => {
                                 </div>
                             </CardContent>
                             <CardFooter className="flex justify-end">
-                                <Button>Create</Button>
+                                <Button>Add</Button>
                             </CardFooter>
                         </form>
                     </Card>
