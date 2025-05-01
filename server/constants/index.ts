@@ -73,6 +73,14 @@ export const APP_MESSAGE = {
     invalidCredentials: "Invalid email or password.",
     userUnauthorized:
         "User unauthorized! Please sign in to access this resource.",
-
     signedOut: "User successfully signed out.",
+    passwordChanged: "Password successfully changed.",
+
+    // Notes
+    noteCreated: "Note successfully created.",
+    noteUpdated: "Note successfully updated.",
+    noteDeleted: "Note successfully deleted.",
+    noteNotFound: "Note not found.",
+    noteFetchError: "Failed to retrieve notes.",
+    noteAlreadyExists: "A note with this title already exists.",
 };

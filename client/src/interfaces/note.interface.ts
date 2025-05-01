@@ -3,5 +3,5 @@ export interface Note {
     title: string;
     content: string;
     subject: string;
-    createdAt: Date;
+    created_at: Date;
 }

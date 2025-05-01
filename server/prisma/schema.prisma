@@ -42,7 +42,20 @@ model Student {
   group         String
   email         String   @unique
   password_hash String
+  temp_password Boolean  @default(true)
   batch         Int
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
+  Note          Note[]
+}
+
+model Note {
+  id         Int      @id @default(autoincrement())
+  title      String
+  subject    String
+  content    String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  ownerId    Int
+  owner      Student  @relation(fields: [ownerId], references: [id])
 }

@@ -15,6 +15,7 @@ import NotFound from "./pages/errors/NotFound";
 import AddStudents from "./pages/students/AddStudents";
 import Profile from "./pages/profile/Profile";
 import Notes from "./pages/material/Notes";
+import ChangePassword from "./pages/auth/ChangePassword";
 
 const App = () => {
     return (
@@ -23,6 +24,10 @@ const App = () => {
             <Routes>
                 <Route path="*" element={<NotFound />} />
                 <Route index element={<SignIn />} />
+                <Route
+                    path="/auth/change-password"
+                    element={<ChangePassword />}
+                />
                 <Route path="dashboard">
                     <Route path="home" element={<Dashboard />} />
                     <Route path="profile" element={<Profile />} />

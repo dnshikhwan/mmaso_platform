@@ -11,58 +11,38 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Note } from "@/interfaces/note.interface";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
+import { axiosConfig } from "@/axiosConfig";
 
 interface AddNoteModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onAddNote: (note: Omit<Note, "id" | "createdAt">) => void;
 }
 
-export function AddNoteModal({
-    isOpen,
-    onClose,
-    onAddNote,
-}: AddNoteModalProps) {
+export function AddNoteModal({ isOpen, onClose }: AddNoteModalProps) {
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [subject, setSubject] = useState("");
     const [errors, setErrors] = useState<Record<string, string>>({});
 
-    const validateForm = () => {
-        const newErrors: Record<string, string> = {};
-
-        if (!title.trim()) {
-            newErrors.title = "Title is required";
-        }
-
-        if (!content.trim()) {
-            newErrors.content = "Content is required";
-        }
-
-        if (!subject.trim()) {
-            newErrors.subject = "Subject is required";
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (validateForm()) {
-            onAddNote({
+        try {
+            const data = {
                 title,
                 content,
                 subject,
-            });
+            };
 
-            // Reset form
-            setTitle("");
-            setContent("");
-            setSubject("");
-            setErrors({});
+            const response = await axiosConfig.post("/notes/create-note", data);
+            toast.success(response.data.message);
+            handleClose();
+        } catch (err) {
+            if (err instanceof AxiosError) {
+                toast.error(err.response?.data.message);
+            }
         }
     };
 

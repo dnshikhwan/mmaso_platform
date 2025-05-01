@@ -4,4 +4,5 @@ export interface IStudent {
     group: string;
     email: string;
     batch: number;
+    temp_password: boolean;
 }

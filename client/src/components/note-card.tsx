@@ -23,10 +23,16 @@ export function NoteCard({ note }: NoteCardProps) {
                 </div>
             </CardHeader>
             <CardContent className="flex-grow">
-                <p className="whitespace-pre-wrap">{note.content}</p>
+                <p className="whitespace-pre-wrap">
+                    {note.content.length > 100 ? (
+                        <span>{note.content.substring(0, 100)}...</span>
+                    ) : (
+                        note.content
+                    )}
+                </p>
             </CardContent>
             <CardFooter className="text-sm text-muted-foreground">
-                {formatDistanceToNow(note.createdAt, { addSuffix: true })}
+                {formatDistanceToNow(note.created_at, { addSuffix: true })}
             </CardFooter>
         </Card>
     );

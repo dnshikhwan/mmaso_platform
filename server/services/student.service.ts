@@ -71,7 +71,67 @@ export const studentSignIn = async (
             res,
             true,
             HTTP_RESPONSE_CODE.OK,
-            APP_MESSAGE.signedIn
+            APP_MESSAGE.signedIn,
+            {
+                student,
+            }
+        );
+    } catch (err) {
+        next(err);
+    }
+};
+
+// change password and update temp_password = false
+export const changePassword = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const currentUser = req.user;
+        const { password } = req.body;
+
+        if (!password) {
+            return sendResponse(
+                res,
+                false,
+                HTTP_RESPONSE_CODE.BAD_REQUEST,
+                APP_MESSAGE.missingRequiredFields
+            );
+        }
+
+        const data = await prisma.student.findUnique({
+            where: {
+                email: currentUser.email,
+            },
+        });
+
+        if (!data) {
+            return sendResponse(
+                res,
+                false,
+                HTTP_RESPONSE_CODE.UNAUTHORIZED,
+                APP_MESSAGE.userUnauthorized
+            );
+        }
+
+        const password_hash = await argon2.hash(password);
+
+        await prisma.student.update({
+            where: {
+                email: currentUser.email,
+            },
+            data: {
+                password_hash,
+                temp_password: false,
+            },
+        });
+
+        return sendResponse(
+            res,
+            true,
+            HTTP_RESPONSE_CODE.OK,
+            APP_MESSAGE.passwordChanged
         );
     } catch (err) {
         next(err);

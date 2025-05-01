@@ -14,6 +14,7 @@ import { Link, useNavigate } from "react-router";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
 import { axiosConfig } from "@/axiosConfig";
+import { IStudent } from "@/interfaces/student.interface";
 
 export function LoginForm({
     className,
@@ -34,7 +35,13 @@ export function LoginForm({
 
             const response = await axiosConfig.post("/student/sign-in", data);
             toast.success(response.data.message);
-            return navigate("/dashboard/home");
+            const studentData = response.data.details.student as IStudent;
+
+            if (studentData.temp_password) {
+                return navigate("/auth/change-password");
+            } else {
+                return navigate("/dashboard/home");
+            }
         } catch (err) {
             if (err instanceof AxiosError) {
                 toast.error(err.response?.data.message);

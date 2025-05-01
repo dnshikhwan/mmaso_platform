@@ -1,49 +1,32 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { AddNoteModal } from "@/components/add-note-modal";
 import { Note } from "@/interfaces/note.interface";
 import { NoteCard } from "./note-card";
+import { AxiosError } from "axios";
+import { toast } from "sonner";
+import { axiosConfig } from "@/axiosConfig";
 
 export function StudyNotesPage() {
-    const [notes, setNotes] = useState<Note[]>([
-        {
-            id: "1",
-            title: "React Hooks",
-            content:
-                "useState, useEffect, useContext, useReducer, useCallback, useMemo, useRef",
-            subject: "Web Development",
-            createdAt: new Date("2023-05-15"),
-        },
-        {
-            id: "2",
-            title: "Data Structures",
-            content:
-                "Arrays, Linked Lists, Stacks, Queues, Trees, Graphs, Hash Tables",
-            subject: "Computer Science",
-            createdAt: new Date("2023-05-10"),
-        },
-        {
-            id: "3",
-            title: "CSS Grid vs Flexbox",
-            content:
-                "Grid is 2D, Flexbox is 1D. Grid is for layout, Flexbox is for alignment.",
-            subject: "Web Development",
-            createdAt: new Date("2023-05-05"),
-        },
-    ]);
+    const [notes, setNotes] = useState<Note[]>([]);
+
+    const handleFetchNotes = async () => {
+        try {
+            const response = await axiosConfig.get("/notes/all-notes");
+            setNotes(response.data.details.notes);
+        } catch (err) {
+            if (err instanceof AxiosError) {
+                toast.error(err.response?.data.message);
+            }
+        }
+    };
+
+    useEffect(() => {
+        handleFetchNotes();
+    }, []);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const addNote = (note: Omit<Note, "id" | "createdAt">) => {
-        const newNote: Note = {
-            ...note,
-            id: Math.random().toString(36).substring(2, 9),
-            createdAt: new Date(),
-        };
-        setNotes([newNote, ...notes]);
-        setIsModalOpen(false);
-    };
 
     return (
         <div className="container mx-auto py-8 px-4">
@@ -75,7 +58,6 @@ export function StudyNotesPage() {
             <AddNoteModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                onAddNote={addNote}
             />
         </div>
     );
