@@ -10,9 +10,20 @@ export const createEvent = async (
 ) => {
     try {
         const { name, description, date, venue, participant_limit } = req.body;
+        const image = req.file;
         const adminId = 1;
 
-        if (!name || !description || !date || !venue || !participant_limit) {
+        console.log(req.body);
+        console.log(req.file);
+
+        if (
+            !name ||
+            !description ||
+            !date ||
+            !venue ||
+            !participant_limit ||
+            !image
+        ) {
             return sendResponse(
                 res,
                 false,
@@ -21,29 +32,27 @@ export const createEvent = async (
             );
         }
 
-        console.log(req.files);
+        const newEvent = await prisma.event.create({
+            data: {
+                name,
+                description,
+                date: new Date(date),
+                venue,
+                image: image.filename,
+                participant_limit: Number(participant_limit),
+                adminId,
+            },
+        });
 
-        // const newEvent = await prisma.event.create({
-        //     data: {
-        //         name,
-        //         description,
-        //         date: new Date(date),
-        //         venue,
-        //         image,
-        //         participant_limit: Number(participant_limit),
-        //         adminId,
-        //     },
-        // });
-
-        // return sendResponse(
-        //     res,
-        //     true,
-        //     HTTP_RESPONSE_CODE.CREATED,
-        //     APP_MESSAGE.eventCreated,
-        //     {
-        //         event: newEvent,
-        //     }
-        // );
+        return sendResponse(
+            res,
+            true,
+            HTTP_RESPONSE_CODE.CREATED,
+            APP_MESSAGE.eventCreated,
+            {
+                event: newEvent,
+            }
+        );
     } catch (err) {
         next(err);
     }

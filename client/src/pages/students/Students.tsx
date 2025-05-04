@@ -64,7 +64,10 @@ const Dashboard = () => {
                                 placeholder="Find student..."
                                 className="max-w-sm"
                                 value={search}
-                                onChange={(e) => setSearch(e.target.value)}
+                                onChange={(e) => {
+                                    setSelectedBatch("");
+                                    setSearch(e.target.value);
+                                }}
                             />
                             <div className="ml-auto">
                                 <DropdownMenu>

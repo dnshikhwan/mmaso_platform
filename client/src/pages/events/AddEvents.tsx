@@ -30,18 +30,26 @@ const AddEvents = () => {
     const handleCreateEvents = async (e: FormEvent) => {
         e.preventDefault();
         try {
-            const data = {
-                name,
-                description,
-                image,
-                date,
-                venue,
-                participant_limit: participantLimit,
+            const formData = new FormData();
+
+            formData.append("name", name);
+            formData.append("description", description);
+            formData.append("image", image as File);
+            formData.append("date", date?.toISOString() ?? ""),
+                formData.append("venue", venue);
+            formData.append("participant_limit", participantLimit);
+
+            const config = {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
             };
 
-            console.log(data);
-
-            const response = await axiosConfig.post("event/create-event", data);
+            const response = await axiosConfig.post(
+                "event/create-event",
+                formData,
+                config
+            );
             toast.success(response.data.message);
             return navigate("/admin/events");
         } catch (err) {
@@ -101,10 +109,10 @@ const AddEvents = () => {
                                         />
                                     </div>
                                     <div className="flex flex-col space-y-1.5">
-                                        <Label htmlFor="picture">Picture</Label>
+                                        <Label htmlFor="image">Picture</Label>
                                         <Input
-                                            id="picture"
-                                            name="picture"
+                                            id="image"
+                                            name="image"
                                             type="file"
                                             accept=".png, .jpg, .jpeg"
                                             onChange={handlePhoto}

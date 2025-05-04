@@ -22,12 +22,15 @@ const Events = () => {
         try {
             const response = await axiosConfig.get("/event/all-events");
             setEvents(response.data.details.events);
+            console.log(response.data.details);
         } catch (err) {
             if (err instanceof AxiosError) {
                 toast.error(err.response?.data.message);
             }
         }
     };
+
+    const url = "http://localhost:5000/uploads/";
 
     useEffect(() => {
         fetchEvents();
@@ -37,13 +40,15 @@ const Events = () => {
         <AdminLayout heading="Events" subheading="View Events">
             <div className="flex flex-1 flex-col gap-4 p-4">
                 <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min">
-                    <div className="grid lg:grid-cols-3 gap-4">
+                    <div className="grid lg:grid-cols-4 gap-4">
                         {events.map((event) => (
-                            <Card>
+                            <Card key={event.id}>
                                 <CardHeader>
                                     <Link to={`/dashboard/event/${event.id}`}>
                                         <CardTitle>
-                                            <img src="https://images.unsplash.com/photo-1471295253337-3ceaaedca402?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHNwb3J0c3xlbnwwfHwwfHx8MA%3D%3D" />
+                                            <img
+                                                src={url + "/" + event.image}
+                                            />
                                         </CardTitle>
                                     </Link>
                                 </CardHeader>

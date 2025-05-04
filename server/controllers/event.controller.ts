@@ -13,7 +13,7 @@ const eventController = () => {
 
     router.get("/get-event/:id", getEvent);
     router.delete("/delete-event/:id", deleteEvent);
-    router.post("/create-event", upload.single("picture"), createEvent);
+    router.post("/create-event", upload.single("image"), createEvent);
     router.get("/all-events", getAllEvent);
 
     return router;
