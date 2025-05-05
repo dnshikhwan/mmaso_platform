@@ -4,169 +4,107 @@ import { DatePicker } from "@/components/date-picket";
 import ParticipantLimitSelector from "@/components/participants-limit";
 import { Button } from "@/components/ui/button";
 import {
-    Card,
-    CardContent,
-    CardFooter,
-    CardHeader,
-    CardTitle,
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AxiosError } from "axios";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
 const AddEvents = () => {
-    const [name, setName] = useState("");
-    const [description, setDescription] = useState("");
-    const [date, setDate] = useState<Date | undefined>(undefined);
-    const [venue, setVenue] = useState("");
-    const [participantLimit, setParticipantLimit] = useState("0");
-    const [image, setImage] = useState<File | string>("");
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-    const navigate = useNavigate();
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [date, setDate] = useState<Date | undefined>(undefined);
+  const [venue, setVenue] = useState("");
+  const [participantLimit, setParticipantLimit] = useState("0");
+  const navigate = useNavigate();
 
-    const handleCreateEvents = async (e: FormEvent) => {
-        e.preventDefault();
-        try {
-            const formData = new FormData();
+  const handleCreateEvents = async (e: FormEvent) => {
+    e.preventDefault();
+    try {
+      const data = {
+        name,
+        description,
+        date,
+        venue,
+        participant_limit: participantLimit,
+      };
 
-            formData.append("name", name);
-            formData.append("description", description);
-            formData.append("image", image as File);
-            formData.append("date", date?.toISOString() ?? ""),
-                formData.append("venue", venue);
-            formData.append("participant_limit", participantLimit);
+      const response = await axiosConfig.post("event/create-event", data);
+      toast.success(response.data.message);
+      return navigate("/admin/events");
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        toast.error(err.response?.data.message);
+      }
+    }
+  };
 
-            const config = {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            };
-
-            const response = await axiosConfig.post(
-                "event/create-event",
-                formData,
-                config
-            );
-            toast.success(response.data.message);
-            return navigate("/admin/events");
-        } catch (err) {
-            if (err instanceof AxiosError) {
-                toast.error(err.response?.data.message);
-            }
-        }
-    };
-
-    const handlePhoto = (e: ChangeEvent<HTMLInputElement>) => {
-        if (!e.target.files) return;
-        setImage(e.target.files[0]);
-
-        const reader = new FileReader();
-        reader.readAsDataURL(e.target.files[0]);
-        reader.onloadend = () => {
-            setPreviewUrl(reader.result as string);
-        };
-    };
-
-    return (
-        <AdminLayout heading="Events " subheading="Add Events">
-            <div className="flex flex-1 flex-col gap-4 p-4">
-                <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min">
-                    <Card className="w-2/3">
-                        <CardHeader>
-                            <CardTitle>Add events</CardTitle>
-                        </CardHeader>
-                        <form
-                            onSubmit={handleCreateEvents}
-                            encType="multipart/form-data"
-                        >
-                            <CardContent>
-                                <div className="grid w-full items-center gap-4">
-                                    <div className="flex flex-col space-y-1.5">
-                                        <Label htmlFor="name">Name</Label>
-                                        <Input
-                                            id="name"
-                                            placeholder="Name of the event"
-                                            value={name}
-                                            onChange={(e) =>
-                                                setName(e.target.value)
-                                            }
-                                        />
-                                    </div>
-                                    <div className="flex flex-col space-y-1.5">
-                                        <Label htmlFor="description">
-                                            Description
-                                        </Label>
-                                        <Input
-                                            id="description"
-                                            placeholder="Description of the event"
-                                            value={description}
-                                            onChange={(e) =>
-                                                setDescription(e.target.value)
-                                            }
-                                        />
-                                    </div>
-                                    <div className="flex flex-col space-y-1.5">
-                                        <Label htmlFor="image">Picture</Label>
-                                        <Input
-                                            id="image"
-                                            name="image"
-                                            type="file"
-                                            accept=".png, .jpg, .jpeg"
-                                            onChange={handlePhoto}
-                                        />
-                                    </div>
-                                    {previewUrl && (
-                                        <div className="flex flex-col space-y-1.5">
-                                            <Label htmlFor="picture">
-                                                Preview
-                                            </Label>
-                                            <img
-                                                src={previewUrl}
-                                                alt="preview"
-                                                className="max-h-30 max-w-30"
-                                            />
-                                        </div>
-                                    )}
-                                    <div className="flex flex-col space-y-1.5">
-                                        <Label htmlFor="date">Date</Label>
-                                        <DatePicker
-                                            date={date}
-                                            setDate={setDate}
-                                        />
-                                    </div>
-                                    <div className="flex flex-col space-y-1.5">
-                                        <Label htmlFor="venue">Venue</Label>
-                                        <Input
-                                            id="venue"
-                                            placeholder="Venue of the event"
-                                            value={venue}
-                                            onChange={(e) =>
-                                                setVenue(e.target.value)
-                                            }
-                                        />
-                                    </div>
-                                    <div className="flex flex-col space-y-3">
-                                        <ParticipantLimitSelector
-                                            participantLimit={participantLimit}
-                                            setParticipantLimit={
-                                                setParticipantLimit
-                                            }
-                                        />
-                                    </div>
-                                </div>
-                            </CardContent>
-                            <CardFooter className="flex justify-end">
-                                <Button>Add</Button>
-                            </CardFooter>
-                        </form>
-                    </Card>
+  return (
+    <AdminLayout heading="Events " subheading="Add Events">
+      <div className="flex flex-1 flex-col gap-4 p-4">
+        <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min">
+          <Card className="w-2/3">
+            <CardHeader>
+              <CardTitle>Add events</CardTitle>
+            </CardHeader>
+            <form onSubmit={handleCreateEvents} encType="multipart/form-data">
+              <CardContent>
+                <div className="grid w-full items-center gap-4">
+                  <div className="flex flex-col space-y-1.5">
+                    <Label htmlFor="name">Name</Label>
+                    <Input
+                      id="name"
+                      placeholder="Name of the event"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
+                  </div>
+                  <div className="flex flex-col space-y-1.5">
+                    <Label htmlFor="description">Description</Label>
+                    <Input
+                      id="description"
+                      placeholder="Description of the event"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                    />
+                  </div>
+                  <div className="flex flex-col space-y-1.5">
+                    <Label htmlFor="date">Date</Label>
+                    <DatePicker date={date} setDate={setDate} />
+                  </div>
+                  <div className="flex flex-col space-y-1.5">
+                    <Label htmlFor="venue">Venue</Label>
+                    <Input
+                      id="venue"
+                      placeholder="Venue of the event"
+                      value={venue}
+                      onChange={(e) => setVenue(e.target.value)}
+                    />
+                  </div>
+                  <div className="flex flex-col space-y-3">
+                    <ParticipantLimitSelector
+                      participantLimit={participantLimit}
+                      setParticipantLimit={setParticipantLimit}
+                    />
+                  </div>
                 </div>
-            </div>
-        </AdminLayout>
-    );
+              </CardContent>
+              <CardFooter className="flex justify-end">
+                <Button>Add</Button>
+              </CardFooter>
+            </form>
+          </Card>
+        </div>
+      </div>
+    </AdminLayout>
+  );
 };
 
 export default AddEvents;

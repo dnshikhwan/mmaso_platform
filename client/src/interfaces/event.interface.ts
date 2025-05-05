@@ -1,9 +1,8 @@
 export interface IEvent {
-    id: number;
-    name: String;
-    description: String;
-    date: Date;
-    venue: String;
-    image: string;
-    participant_limit: Number;
+  id: number;
+  name: string;
+  description: string;
+  date: Date;
+  venue: string;
+  participant_limit: number;
 }

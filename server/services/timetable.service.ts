@@ -1,5 +1,7 @@
+// src/services/timetable.service.ts
+
 import { NextFunction, Request, Response } from "express";
-import scrapeTimetable from "../helpers/timetableScrapper";
+import { fetchTimetable, TimetableEntry } from "../helpers/scraper.helper";
 import { sendResponse } from "../helpers/response.helper";
 import { APP_MESSAGE, HTTP_RESPONSE_CODE } from "../constants";
 
@@ -9,8 +11,21 @@ export const getTimetable = async (
   next: NextFunction
 ) => {
   try {
-    scrapeTimetable();
-    return sendResponse(res, true, HTTP_RESPONSE_CODE.OK, APP_MESSAGE.success);
+    const group = String(req.query.group || "").trim();
+    if (!group) {
+      return sendResponse(
+        res,
+        false,
+        HTTP_RESPONSE_CODE.BAD_REQUEST,
+        APP_MESSAGE.missingRequiredFields
+      );
+    }
+
+    const schedule: TimetableEntry[] = await fetchTimetable(group);
+
+    return sendResponse(res, true, HTTP_RESPONSE_CODE.OK, APP_MESSAGE.success, {
+      schedule,
+    });
   } catch (err) {
     next(err);
   }

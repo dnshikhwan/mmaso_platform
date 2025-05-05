@@ -5,57 +5,99 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
 }
 
 model Admin {
-  id            Int      @id @default(autoincrement())
-  email         String   @unique
-  password_hash String
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
-  events        Event[]
+    id            Int            @id @default(autoincrement())
+    email         String         @unique
+    password_hash String
+    created_at    DateTime       @default(now())
+    updated_at    DateTime       @updatedAt
+    events        Event[]
+    Announcement  Announcement[]
 }
 
 model Event {
-  id                Int      @id @default(autoincrement())
-  name              String
-  description       String
-  date              DateTime
-  venue             String
-  image             String
-  participant_limit Int
-  created_at        DateTime @default(now())
-  updated_at        DateTime @updatedAt
-  adminId           Int
-  admin             Admin    @relation(fields: [adminId], references: [id])
+    id                Int            @id @default(autoincrement())
+    name              String
+    description       String
+    date              DateTime
+    venue             String
+    participant_limit Int
+    created_at        DateTime       @default(now())
+    updated_at        DateTime       @updatedAt
+    adminId           Int
+    admin             Admin          @relation(fields: [adminId], references: [id])
+    StudentEvent      StudentEvent[]
 }
 
 model Student {
-  id            Int      @id @default(autoincrement())
-  name          String
-  group         String
-  email         String   @unique
-  password_hash String
-  temp_password Boolean  @default(true)
-  batch         Int
-  created_at    DateTime @default(now())
-  updated_at    DateTime @updatedAt
-  Note          Note[]
+    id                  Int                   @id @default(autoincrement())
+    name                String
+    group               String
+    email               String                @unique
+    password_hash       String
+    temp_password       Boolean               @default(true)
+    batch               Int
+    created_at          DateTime              @default(now())
+    updated_at          DateTime              @updatedAt
+    Note                Note[]
+    AnnouncementStudent AnnouncementStudent[]
+    StudentEvent        StudentEvent[]
 }
 
 model Note {
-  id         Int      @id @default(autoincrement())
-  title      String
-  subject    String
-  content    String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  ownerId    Int
-  owner      Student  @relation(fields: [ownerId], references: [id])
+    id         Int      @id @default(autoincrement())
+    title      String
+    subject    String
+    content    String
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+    ownerId    Int
+    owner      Student  @relation(fields: [ownerId], references: [id])
+}
+
+model Announcement {
+    id                  Int                   @id @default(autoincrement())
+    title               String
+    content             String
+    created_at          DateTime              @default(now())
+    updated_at          DateTime              @updatedAt
+    adminId             Int
+    admin               Admin                 @relation(fields: [adminId], references: [id])
+    AnnouncementStudent AnnouncementStudent[]
+}
+
+model AnnouncementStudent {
+    id Int @id @default(autoincrement())
+
+    announcementId Int
+    announcement   Announcement @relation(fields: [announcementId], references: [id])
+
+    studentId Int
+    student   Student @relation(fields: [studentId], references: [id])
+
+    isRead Boolean @default(false)
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
+}
+
+model StudentEvent {
+    id Int @id @default(autoincrement())
+
+    studentId Int
+    student   Student @relation(fields: [studentId], references: [id])
+
+    eventId Int
+    event   Event @relation(fields: [eventId], references: [id])
+
+    created_at DateTime @default(now())
+    updated_at DateTime @updatedAt
 }

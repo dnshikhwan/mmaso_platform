@@ -1,5 +1,5 @@
 import { axiosConfig } from "@/axiosConfig";
-import AdminLayout from "@/components/admin-layout";
+import Layout from "@/components/layout";
 import Loading from "@/components/loading";
 import { Button } from "@/components/ui/button";
 import { IEvent } from "@/interfaces/event.interface";
@@ -10,9 +10,10 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
 
-const Event = () => {
+const JoinEvent = () => {
   const { id } = useParams();
-  const [event, setEvent] = useState<IEvent | undefined>(undefined);
+  const [event, setEvent] = useState<IEvent | null>(null);
+  const [joined, setJoined] = useState(false);
   const [count, setCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -22,7 +23,9 @@ const Event = () => {
       setIsLoading(true);
       const response = await axiosConfig.get(`/event/get-event/${id}`);
       setEvent(response.data.details.event);
+      setJoined(response.data.details.joined);
       setCount(response.data.details.count);
+      console.log(response.data.details);
     } catch (err) {
       if (err instanceof AxiosError) {
         toast.error(err.response?.data);
@@ -48,12 +51,25 @@ const Event = () => {
     }
   };
 
+  const handleJoinEvent = async (eventId: number) => {
+    try {
+      const response = await axiosConfig.get(`/event/join-event/${eventId}`);
+      setCount((currentCount) => currentCount + 1);
+      setJoined(true);
+      toast.success(response.data.message);
+    } catch (err) {
+      if (err instanceof AxiosError) {
+        toast.error(err.response?.data.message);
+      }
+    }
+  };
+
   return (
     <div>
       {isLoading ? (
         <Loading />
       ) : (
-        <AdminLayout heading="Events" subheading={event?.name}>
+        <Layout heading="Events" subheading={event?.name || ""}>
           <div className="flex flex-1 flex-col gap-4 p-4">
             <div className="flex-1 rounded-xl bg-muted/50 md:min-h-min">
               <div className="container mx-auto px-4 py-8">
@@ -145,6 +161,24 @@ const Event = () => {
                             {count} / {String(event?.participant_limit)}
                           </p>
                         </div>
+
+                        <div>
+                          {!joined ? (
+                            <Button
+                              onClick={() => handleJoinEvent(event?.id ?? 0)}
+                              className="bg-black w-full hover:bg-gray-900"
+                            >
+                              Join event
+                            </Button>
+                          ) : (
+                            <Button
+                              disabled
+                              className="bg-black w-full hover:bg-gray-900"
+                            >
+                              Joined
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -152,10 +186,10 @@ const Event = () => {
               </div>
             </div>
           </div>
-        </AdminLayout>
+        </Layout>
       )}
     </div>
   );
 };
 
-export default Event;
+export default JoinEvent;

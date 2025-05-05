@@ -25,6 +25,6 @@ app.use(requestLogger);
 app.use("/api", createRouter());
 
 app.listen(PORT, () => {
-    prismaInit();
-    logger.info(`Server is running on port ${PORT}`);
+  prismaInit();
+  logger.info(`Server is running on port ${PORT}`);
 });

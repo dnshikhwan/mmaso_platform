@@ -1,5 +1,5 @@
 import { axiosConfig } from "@/axiosConfig";
-import AdminLayout from "@/components/admin-layout";
+import Layout from "@/components/layout";
 import {
   Card,
   CardContent,
@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { toast } from "sonner";
 
-const Events = () => {
+const StudentEvents = () => {
   const [events, setEvents] = useState<IEvent[]>([]);
 
   const fetchEvents = async () => {
@@ -35,14 +35,14 @@ const Events = () => {
   }, []);
 
   return (
-    <AdminLayout heading="Events" subheading="View Events">
+    <Layout heading="Communication" subheading="Events">
       <div className="flex flex-1 flex-col gap-4 p-4">
         <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min">
           <div className="grid lg:grid-cols-4 gap-4">
             {events.map((event) => (
               <Card key={event.id}>
                 <CardHeader>
-                  <Link to={`/admin/event/${event.id}`}>
+                  <Link to={`/dashboard/join-event/${event.id}`}>
                     <CardTitle>
                       <img
                         className="w-full"
@@ -84,8 +84,8 @@ const Events = () => {
           </div>
         </div>
       </div>
-    </AdminLayout>
+    </Layout>
   );
 };
 
-export default Events;
+export default StudentEvents;
