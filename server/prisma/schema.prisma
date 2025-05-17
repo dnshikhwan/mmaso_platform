@@ -101,3 +101,18 @@ model StudentEvent {
     created_at DateTime @default(now())
     updated_at DateTime @updatedAt
 }
+
+model Timetable {
+    id        Int      @id @default(autoincrement())
+    groupCode String
+    day       String
+    subject   String
+    startTime String
+    endTime   String
+    room      String?
+    teacher   String?
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([groupCode])
+}

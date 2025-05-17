@@ -25,10 +25,10 @@ export function NavUser({
     user,
 }: {
     user: {
-        name: string;
-        email: string;
-        group: string;
-        avatar: string;
+        name?: string;
+        email?: string;
+        group?: string;
+        avatar?: string;
     };
 }) {
     const { isMobile } = useSidebar();
@@ -39,6 +39,7 @@ export function NavUser({
         try {
             const response = await axiosConfig.post("/admin/sign-out");
             toast.success(response.data.message);
+            localStorage.clear();
             return navigate("/");
         } catch (err) {
             if (err instanceof AxiosError) {

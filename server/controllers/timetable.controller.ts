@@ -1,12 +1,18 @@
 import { Router } from "express";
-import { getTimetable } from "../services/timetable.service";
+import {
+    getAllGroups,
+    getTimetable,
+    getUpcomingWeekTimetable,
+} from "../services/timetable.service";
 
 const timetableController = () => {
-  const router = Router();
+    const router = Router();
 
-  router.get("/", getTimetable);
+    router.get("/groups", getAllGroups);
+    router.get("/:groupCode/upcoming-week", getUpcomingWeekTimetable as any);
+    router.get("/:groupCode", getTimetable as any);
 
-  return router;
+    return router;
 };
 
 export default timetableController;
