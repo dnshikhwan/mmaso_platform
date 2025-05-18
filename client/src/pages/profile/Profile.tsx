@@ -2,7 +2,6 @@ import { axiosConfig } from "@/axiosConfig";
 import Layout from "@/components/layout";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { IStudent } from "@/interfaces/student.interface";
 import { AxiosError } from "axios";
