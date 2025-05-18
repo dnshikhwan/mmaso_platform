@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/button";
 import { IEvent } from "@/interfaces/event.interface";
 import { AxiosError } from "axios";
 import { format } from "date-fns";
-import { CalendarDays, MapPin, Pencil, Trash2 } from "lucide-react";
+import { CalendarDays, MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 import { toast } from "sonner";
 
 const JoinEvent = () => {
@@ -16,7 +16,6 @@ const JoinEvent = () => {
     const [joined, setJoined] = useState(false);
     const [count, setCount] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
-    const navigate = useNavigate();
 
     const fetchEvent = async () => {
         try {
