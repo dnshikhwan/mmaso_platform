@@ -268,11 +268,12 @@ function getUpcomingWeek(
     // Get day of week (0 = Sunday, 1 = Monday, etc.)
     const currentDayOfWeek = currentDate.getDay();
 
-    // Calculate the date of the next Monday
+    // Calculate the date of the current week's Monday
     let nextMonday = new Date(currentDate);
-    const daysUntilNextMonday =
-        currentDayOfWeek === 0 ? 1 : 8 - currentDayOfWeek;
-    nextMonday.setDate(currentDate.getDate() + daysUntilNextMonday);
+    // If today is Sunday (0), we go back 6 days to get to Monday
+    // If today is Monday (1), we go back 0 days, etc.
+    const daysFromMonday = currentDayOfWeek === 0 ? 6 : currentDayOfWeek - 1;
+    nextMonday.setDate(currentDate.getDate() - daysFromMonday);
 
     // Format next Monday as "DD.MM.YYYY"
     const nextMondayStr = `${nextMonday
@@ -401,9 +402,19 @@ function getUpcomingWeek(
                 }
             }
 
-            // Sort lessons by start time
+            // Sort lessons by start time in 24-hour format (ascending)
             result.upcomingWeek.days[dayName].lessons.sort((a, b) => {
-                return a.startTime.localeCompare(b.startTime);
+                // Parse times to ensure proper 24-hour sorting
+                const timeA = a.startTime.split(":").map(Number);
+                const timeB = b.startTime.split(":").map(Number);
+
+                // Compare hours first
+                if (timeA[0] !== timeB[0]) {
+                    return timeA[0] - timeB[0];
+                }
+
+                // If hours are equal, compare minutes
+                return timeA[1] - timeB[1];
             });
         }
     }
